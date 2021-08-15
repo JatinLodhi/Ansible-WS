@@ -1,0 +1,49 @@
+- hosts: docker
+  tasks:
+          - name: create a docker repository
+            yum_repository:
+                 description: "repo for docker"
+                 name : "docker"
+                 baseurl: "https://download.docker.com/linux/centos/7/x86_64/stable/"
+                 gpgcheck: no
+                 enabled: yes
+         
+
+
+          - name: installing docker package
+            command: "yum install docker-ce --nobest -y" 
+
+
+                  
+
+
+          - name: starting docker service
+            service:
+                  name: "docker"
+                  state:  started
+                  enabled: yes
+
+          - name:  "installing docker sdk for  python3"
+            command :  pip3 install docker
+
+          - name: create folder and copying html file   
+            file:
+              path: /webpages
+              state: directory
+          - name: Copying html files
+            copy:
+              src: "web.html"
+              dest: "/var/www/html/web.html"          
+          
+
+          - name: "launching container using  httpd image"
+            docker_container:
+              name: docker
+              image:   httpd
+              state: started
+              exposed_ports:
+              - "80"
+              ports:
+              - "8888:80"
+               
+

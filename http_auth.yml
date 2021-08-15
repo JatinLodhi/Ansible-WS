@@ -1,0 +1,35 @@
+- hosts: all
+  tasks:
+  - package:
+      name: "httpd"   
+
+  - copy:
+      dest: "/var/www/html/index.html"    
+      content: Tech~Arth
+
+  - replace: 
+      path: "/etc/httpd/conf/httpd.conf"
+      regexp: "AllowOverride None"
+      replace: "AllowOverride AuthConfig"
+
+  - copy:
+      dest: "/var/www/html/.htaccess"
+      src: ".htaccesss"
+
+  - package: 
+      name: "python36"
+
+  - pip: 
+      name: "passlib"
+
+  - htpasswd:
+      path: "/etc/auth.passwd"
+      name: "jatin"
+      password: "2002"
+  
+  - service:
+      name: "httpd"
+      state: restarted    
+          
+      
+
